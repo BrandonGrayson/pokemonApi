@@ -1,12 +1,6 @@
-from typing import Union
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-
 from fastapi import FastAPI
-
-class User(BaseModel):
-    userName: str
-    password: str
+from . import schemas, models
 
 app = FastAPI()
 
@@ -22,7 +16,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.post("/createUser")
-def createUser(user: User):
+def createUser(user: schemas.UserBase):
     return user
