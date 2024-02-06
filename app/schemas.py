@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 class UserBase(BaseModel):
-    userName: str
+    email: str
 
 class UserCreate(UserBase):
     password: str
@@ -12,4 +12,4 @@ class User(UserBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True

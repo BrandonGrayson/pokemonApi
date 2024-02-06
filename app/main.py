@@ -1,8 +1,19 @@
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
-from . import schemas, models
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from . import schemas, models, crud
+from .database import SessionLocal, engine
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 origins = [
     "http://localhost:3000"
@@ -16,6 +27,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/createUser")
-def createUser(user: schemas.UserBase):
-    return user
+@app.post("/createUser/", response_model=schemas.User)
+def createUser(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(db, email=user.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    return crud.create_user(db=db, user=user)
