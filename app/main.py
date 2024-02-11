@@ -30,7 +30,7 @@ def createUser(user: schemas.UserCreate, db: Session = Depends(database.get_db))
     user.password = hashed_password
     return crud.create_user(db=db, user=user)
 
-@app.post("/login/",  )
+@app.post("/login/",  response_model=schemas.Token)
 def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(database.get_db)):
     user = db.query(models.Users).filter(models.Users.username == user_credentials.username).first()
 
