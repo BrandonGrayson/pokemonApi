@@ -30,9 +30,9 @@ def createUser(user: schemas.UserCreate, db: Session = Depends(database.get_db))
     user.password = hashed_password
     return crud.create_user(db=db, user=user)
 
-@app.post("/login/", response_model=schemas.User)
+@app.post("/login/",  )
 def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(database.get_db)):
-    user = db.query(models.User).filter(models.Users.username == user.username).first()
+    user = db.query(models.Users).filter(models.Users.username == user_credentials.username).first()
 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid Credentials")
