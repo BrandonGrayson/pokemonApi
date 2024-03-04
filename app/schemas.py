@@ -24,3 +24,10 @@ class TokenData(BaseModel):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+class PokemonCredentials():
+    name: str
+    type: str
+    level: int
+    caught: bool
+    inParty: bool
