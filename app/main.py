@@ -44,3 +44,10 @@ def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(databas
 
     return {"access_token" : access_token, "token_type": "bearer"} 
 
+
+# We'll need pokemon credentials, but also user credentials
+# Need a new database table for Pokedex info
+# 
+@app.post("/addPokemon")
+def addPokemon(pokemon_credentials: schemas.PokemonCredentials, db: Session = Depends(database.get_db), user_id: int = Depends(oauth2.get_current_user)):
+    return pokemon_credentials
