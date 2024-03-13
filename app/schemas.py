@@ -31,3 +31,4 @@ class PokemonCredentials():
     level: int
     caught: bool
     inParty: bool
+    user_id: int

@@ -50,4 +50,6 @@ def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(databas
 # 
 @app.post("/addPokemon")
 def addPokemon(pokemon_credentials: schemas.PokemonCredentials, db: Session = Depends(database.get_db), user_id: int = Depends(oauth2.get_current_user)):
+
+    user = db.query()
     return pokemon_credentials
