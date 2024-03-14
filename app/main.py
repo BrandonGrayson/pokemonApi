@@ -3,6 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from . import schemas, models, crud, oauth2, database, utils
 from .database import engine
+from sqlalchemy import insert
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -49,7 +50,7 @@ def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(databas
 # Need a new database table for Pokedex info
 # 
 @app.post("/addPokemon")
-def addPokemon(pokemon_credentials: schemas.PokemonCredentials, db: Session = Depends(database.get_db), user_id: int = Depends(oauth2.get_current_user)):
+def addPokemon(pokemon_credentials: schemas.IncomingPokemonCredentials, db: Session = Depends(database.get_db), user_id: int = Depends(oauth2.get_current_user)):
 
-    user = db.query()
+    insert(models.Users).values()
     return pokemon_credentials
