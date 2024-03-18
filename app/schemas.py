@@ -30,7 +30,7 @@ class IncomingPokemonCredentials(BaseModel):
     type: str
     level: int
     caught: bool
-    inParty: bool
+    party: bool
     
 class Pokemon(IncomingPokemonCredentials):
     user_id: int
