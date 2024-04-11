@@ -53,6 +53,7 @@ def createUser(user: schemas.UserCreate, db: Session = Depends(database.get_db))
 
 @app.post("/login/",  response_model=schemas.Token)
 def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(database.get_db)):
+    print('user cred', user_credentials)
     user = db.query(models.Users).filter(models.Users.username == user_credentials.username).first()
 
     if not user:
@@ -72,18 +73,20 @@ def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(databas
 # Need a new database table for Pokedex info
 # 
 @app.post("/addPokemon", status_code=status.HTTP_201_CREATED)
-def addPokemon(pokemon_credentials: schemas.Pokemon, db: Session = Depends(database.get_db), user_id: int = Depends(oauth2.get_current_user)):
+def addPokemon(pokemon_credentials: schemas.Pokemon,  db: Session = Depends(database.get_db), user_id: int = Depends(oauth2.get_current_user)):
+
+    print('image', pokemon_credentials.image)
+    print('user_id', user_id)
 
     if not user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You Are Not Signed In.")
-    
-    # new_pokemon = insert(models.Pokemon).values(**pokemon_credentials.model_dump())
-
-    # new_pokemon = insert(models.Users).values(name=pokemon_credentials.name, level=pokemon_credentials.level, type=pokemon_credentials.type, caught=pokemon_credentials.caught, party=pokemon_credentials.inParty, user_id=user_id)
     
     new_pokemon = models.Pokemon(**pokemon_credentials.dict())
     db.add(new_pokemon)
     db.commit()
     db.refresh(new_pokemon)
 
-    return {"data": new_pokemon}
+    print('done')
+    return "done"
+
+    # return {"data": new_pokemon}

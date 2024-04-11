@@ -13,6 +13,7 @@ class Pokemon(Base):
     __tablename__ = "pokemon"
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
+    image = Column(String, nullable=False)
     level = Column(Integer, nullable=False)
     type = Column(String, nullable=False)
     caught = Column(Boolean, nullable=False)

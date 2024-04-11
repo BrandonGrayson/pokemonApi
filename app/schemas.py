@@ -25,12 +25,13 @@ class UserLogin(BaseModel):
     username: str
     password: str
 
-class IncomingPokemonCredentials(BaseModel):
+class Pokemon(BaseModel):
     name: str
     type: str
-    level: int
+    level: int 
     caught: bool
     party: bool
+    image: str
     
-class Pokemon(IncomingPokemonCredentials):
-    user_id: int
+
+    
