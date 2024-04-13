@@ -19,7 +19,7 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    id: str | None = None
+    id: int | None = None
 
 class UserLogin(BaseModel):
     username: str
@@ -32,6 +32,4 @@ class Pokemon(BaseModel):
     caught: bool
     party: bool
     image: str
-    
-
-    
+        

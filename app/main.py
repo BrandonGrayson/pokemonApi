@@ -75,7 +75,6 @@ def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(databas
 @app.post("/addPokemon", status_code=status.HTTP_201_CREATED)
 def addPokemon(pokemon_credentials: schemas.Pokemon,  db: Session = Depends(database.get_db), user_id: int = Depends(oauth2.get_current_user)):
 
-    print('image', pokemon_credentials.image)
     print('user_id', user_id)
 
     if not user_id:
