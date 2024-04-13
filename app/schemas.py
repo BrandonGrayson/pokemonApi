@@ -19,17 +19,23 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    id: int | None = None
+    id: str | None = None
 
 class UserLogin(BaseModel):
     username: str
     password: str
 
-class Pokemon(BaseModel):
+class PokemonCreate(BaseModel):
     name: str
     type: str
     level: int 
     caught: bool
     party: bool
     image: str
+
+class Pokemon(PokemonCreate):
+    owner_id: int    
+
+    class Config:
+        from_attributes = True  
         
