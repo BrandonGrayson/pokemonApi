@@ -20,20 +20,14 @@ def create_access_token(data: dict):
     return encoded_jwt
 
 def verify_access_token(token: str, credentials_exception):
-    # credentials_exception = HTTPException(
-    #     status_code=status.HTTP_401_UNAUTHORIZED,
-    #     detail="Could not validate credentials",
-    #     headers={"WWW-Authenticate": "Bearer"},
-    # )
+    
     try:
-        print('VERIFY TOKEN--->', token)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         idInt: int = payload.get("user_id")
         id = str(idInt)
         if id is None:
             raise credentials_exception
-        print('ID--------->', id)
-        print('ID TYPE ------->', type(id))
+        
         token_data: schemas.TokenData = id
 
     except JWTError as e:

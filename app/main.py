@@ -21,8 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
 @app.post("/createUser/", response_model=schemas.User)
 def createUser(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
     db_user = crud.get_user_by_username(db, username=user.username)
@@ -32,24 +30,6 @@ def createUser(user: schemas.UserCreate, db: Session = Depends(database.get_db))
     hashed_password = utils.pwd_context.hash(user.password)
     user.password = hashed_password
     return crud.create_user(db=db, user=user)
-
-# @app.post("/login/",)
-# def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(database.get_db)):
-#     user = db.query(models.Users).filter(models.Users.username == user_credentials.username).first()
-
-#     print(user_credentials)
-
-#     print(user.password)
-
-#     # if not user:
-#     #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
-    
-#     # if not utils.verify_password(user_credentials.password, user.password):
-#     #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
-    
-#     # access_token = oauth2.create_access_token(data={"user_id": user.id})
-
-#     return {"token": "test token"}
 
 @app.post("/login/",  response_model=schemas.Token)
 def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(database.get_db)):
@@ -66,16 +46,12 @@ def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(databas
     
     access_token = oauth2.create_access_token(data={"user_id": user.id})
 
+    print('access token --->', access_token)
+
     return {"access_token" : access_token, "token_type": "bearer"} 
 
-
-# We'll need pokemon credentials, but also user credentials
-# Need a new database table for Pokedex info
-# 
 @app.post("/addPokemon", status_code=status.HTTP_201_CREATED, response_model=schemas.Pokemon)
 def addPokemon(pokemon_credentials: schemas.PokemonCreate,  db: Session = Depends(database.get_db), user_id: int = Depends(oauth2.get_current_user)):
-
-    print('user_id', user_id)
 
     if not user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You Are Not Signed In.")
@@ -85,7 +61,9 @@ def addPokemon(pokemon_credentials: schemas.PokemonCreate,  db: Session = Depend
     db.commit()
     db.refresh(new_pokemon)
 
-    print('done')
     return new_pokemon
 
-    # return {"data": new_pokemon}
+# route for getting all a users pokemon
+@app.get("/getAllPokemon", status_code=status.HTTP_200_OK)
+def getUserPokemon(db: Session = Depends(database.get_db)):
+    return "Pokemon"
