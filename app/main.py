@@ -64,7 +64,7 @@ def addPokemon(pokemon_credentials: schemas.PokemonCreate,  db: Session = Depend
     return new_pokemon
 
 # route for getting all a users pokemon
-@app.get("/getAllPokemon", status_code=status.HTTP_200_OK)
+@app.get("/getAllPokemon", status_code=status.HTTP_200_OK, response_model=list[schemas.PokemonCreate])
 def getUserPokemon(user_id: int = Depends(oauth2.get_current_user)):
 
     session = Session(engine)

@@ -33,6 +33,9 @@ class PokemonCreate(BaseModel):
     party: bool
     image: str
 
+    class Config:
+        from_attributes = True  
+
 class Pokemon(PokemonCreate):
     owner_id: int    
 
