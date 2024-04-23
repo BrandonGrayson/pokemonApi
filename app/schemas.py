@@ -42,3 +42,8 @@ class Pokemon(PokemonCreate):
     class Config:
         from_attributes = True  
         
+class PokedexPokemon(PokemonCreate):
+    id: int
+
+    class Config:
+        from_attributes = True  
