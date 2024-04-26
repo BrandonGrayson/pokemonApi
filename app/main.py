@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from . import schemas, models, crud, oauth2, database, utils
 from .database import engine
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -77,3 +77,27 @@ def getUserPokemon(user_id: int = Depends(oauth2.get_current_user)):
     pokemon = session.scalars(all_pokemon).all()
     
     return pokemon
+
+@app.put('/updatePokemon/{id}', status_code=status.HTTP_200_OK)
+def updateUserPokemon(id: str, pokemon: schemas.PokemonCreate, user_id: int = Depends(oauth2.get_current_user)):
+    
+    session = Session(engine)
+
+    print('id', id)
+
+    if not user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You Are Not Signed In.")
+    
+    session.execute(update(models.Pokemon).where(models.Pokemon.id == id).values({"name": pokemon.name, "type": pokemon.type, "level": pokemon.level, "caught": pokemon.caught, "party": pokemon.party, "image": pokemon.image}))
+
+    session.commit()
+
+    post_query = select(models.Pokemon).where(models.Pokemon.id == id)
+
+    pokemon_update = session.scalars(post_query).first()
+
+    print('pokemon', pokemon_update)
+
+    return pokemon_update
+
+
