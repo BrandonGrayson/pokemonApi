@@ -100,4 +100,22 @@ def updateUserPokemon(id: str, pokemon: schemas.PokemonCreate, user_id: int = De
 
     return pokemon_update
 
+@app.delete("/delete/{id}")
+def deletePokemon(id: str, user_id: int = Depends(oauth2.get_current_user)):
 
+    if not user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You Are Not Signed In.")
+    
+    session = Session(engine)
+
+    delete = session.get(models.Pokemon, id)
+
+    session.delete(delete)
+
+    session.commit()
+
+    pokemon_query = select(models.Pokemon).where(models.Pokemon.owner_id == user_id)
+
+    pokemon = session.scalars(pokemon_query).all()
+
+    return pokemon
