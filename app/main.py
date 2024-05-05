@@ -50,7 +50,9 @@ def loginUser(user_credentials: schemas.UserLogin, db: Session = Depends(databas
 
     return {"access_token" : access_token, "token_type": "bearer"} 
 
-@app.post("/addPokemon", status_code=status.HTTP_201_CREATED, response_model=schemas.Pokemon)
+# response model changed to PokemonCreate from Pokemon
+
+@app.post("/addPokemon", status_code=status.HTTP_201_CREATED, response_model=schemas.PokedexPokemon)
 def addPokemon(pokemon_credentials: schemas.PokemonCreate,  db: Session = Depends(database.get_db), user_id: int = Depends(oauth2.get_current_user)):
 
     if not user_id:
@@ -104,6 +106,7 @@ def updateUserPokemon(id: str, pokemon: schemas.PokemonCreate, user_id: int = De
 def deletePokemon(id: str, user_id: int = Depends(oauth2.get_current_user)):
 
     if not user_id:
+
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You Are Not Signed In.")
     
     session = Session(engine)
