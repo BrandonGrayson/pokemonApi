@@ -80,7 +80,7 @@ def getUserPokemon(user_id: int = Depends(oauth2.get_current_user)):
     
     return pokemon
 
-@app.put('/updatePokemon/{id}', status_code=status.HTTP_200_OK)
+@app.put('/updatePokemon/{id}', status_code=status.HTTP_200_OK, response_model=schemas.PokedexPokemon)
 def updateUserPokemon(id: str, pokemon: schemas.PokemonCreate, user_id: int = Depends(oauth2.get_current_user)):
     
     session = Session(engine)
@@ -102,7 +102,7 @@ def updateUserPokemon(id: str, pokemon: schemas.PokemonCreate, user_id: int = De
 
     return pokemon_update
 
-@app.delete("/delete/{id}")
+@app.delete("/delete/{id}", status_code=status.HTTP_200_OK, response_model=list[schemas.PokedexPokemon])
 def deletePokemon(id: str, user_id: int = Depends(oauth2.get_current_user)):
 
     if not user_id:
@@ -118,6 +118,22 @@ def deletePokemon(id: str, user_id: int = Depends(oauth2.get_current_user)):
     session.commit()
 
     pokemon_query = select(models.Pokemon).where(models.Pokemon.owner_id == user_id)
+
+    pokemon = session.scalars(pokemon_query).all()
+
+    return pokemon
+
+# create a route for returning all the pokemon where caught is true
+@app.get("/pokemon/training", status_code=status.HTTP_200_OK, response_model=list[schemas.PokedexPokemon])
+def getPokemonForTraining(user_id: int = Depends(oauth2.get_current_user)):
+
+    if not user_id:
+
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You Are Not Signed In.")
+    
+    session = Session(engine)
+
+    pokemon_query = select(models.Pokemon).where(models.Pokemon.owner_id == user_id).where(models.Pokemon.caught == True)
 
     pokemon = session.scalars(pokemon_query).all()
 
