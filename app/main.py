@@ -139,8 +139,8 @@ def getPokemonForTraining(user_id: int = Depends(oauth2.get_current_user)):
 
     return pokemon
 
-@app.post("/pokemon/training/all", status_code=status.HTTP_200_OK)
-def trainAllPokemon(pokemon: schemas.PokedexPokemon, user_id: int = Depends(oauth2.get_current_user)):
+@app.put("/pokemon/training/all", status_code=status.HTTP_200_OK)
+def trainAllPokemon(pokemon: list[schemas.PokedexPokemon], user_id: int = Depends(oauth2.get_current_user)):
 
     if not user_id:
 
@@ -148,7 +148,10 @@ def trainAllPokemon(pokemon: schemas.PokedexPokemon, user_id: int = Depends(oaut
     
     session = Session(engine)
 
-    session.execute(update(models.Pokemon), pokemon)
+    # session.execute(update(models.Pokemon), pokemon)
+
+    for poke in pokemon:
+        session.execute(update(models.Pokemon).where(models.Pokemon.id == poke.id).values(poke.model_dump()))
 
     all_pokemon = select(models.Pokemon).where(models.Pokemon.owner_id == user_id)
 
