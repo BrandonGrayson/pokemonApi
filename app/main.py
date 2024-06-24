@@ -153,6 +153,8 @@ def trainAllPokemon(pokemon: list[schemas.PokedexPokemon], user_id: int = Depend
     for poke in pokemon:
         session.execute(update(models.Pokemon).where(models.Pokemon.id == poke.id).values(poke.model_dump()))
 
+    session.commit()
+    
     all_pokemon = select(models.Pokemon).where(models.Pokemon.owner_id == user_id)
 
     updated_pokemon = session.scalars(all_pokemon).all()
